@@ -2,8 +2,9 @@
     "name": "template-strings-kit",
     "displayName": "Template Strings Kit - HTML CCS JSX Intellisense in template strings",
     "description": "Intellisense in template strings with prefix html, css or jsx",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "publisher": "savh",
+    "icon": "./fileicons/template-strings-kit-logo.png",
     "engines": {
         "vscode": "^1.92.0"
     },
