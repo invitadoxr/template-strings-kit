@@ -15,25 +15,25 @@ This plugin provides syntax highlighting, autocompletion, and diagnostics for te
 ### 🌈 Syntax Highlighting
 Enjoy advanced syntax highlighting for template strings in JavaScript, supporting HTML, CSS, and JSX content.
 
-![Syntax Highlighting](./fileicons/hightlight.gif)
+![Syntax Highlighting](https://raw.githubusercontent.com/invitadoxr/template-strings-kit/master/fileicons/hightlight.gif)
 
 
 ### ✨ Autocompletion
 Benefit from intelligent autocompletion inside your template strings. Whether you're writing HTML, CSS, or JSX, the appropriate suggestions will be provided.
 
-![Syntax Highlighting](./fileicons/auto.gif)
+![Syntax Highlighting](https://raw.githubusercontent.com/invitadoxr/template-strings-kit/master/fileicons/auto.gif)
 
 
 ### 🚨 Diagnostics for JSX
 Get detailed error diagnostics for JSX code within your template strings, helping you quickly identify and fix issues as you type.
 
-![Syntax Highlighting](./fileicons/diagnostics.gif)
+![Syntax Highlighting](https://raw.githubusercontent.com/invitadoxr/template-strings-kit/master/fileicons/diagnostics.gif)
 
 
 ### ⚙️ Prefixed Comments Support
 Automatically recognize template strings prefixed with `/*html*/`, `/*css*/`, or `/*jsx*/`, and apply the relevant features.
 
-![Syntax Highlighting](./fileicons/prefix.gif)
+![Syntax Highlighting](https://raw.githubusercontent.com/invitadoxr/template-strings-kit/master/fileicons/prefix.gif)
 
 
 ### Installation
@@ -74,7 +74,7 @@ or by using JavaScript comments, e.g. :
 These are just examples, situations may vary.
 You will practically never have to think about this, but it is still better to know. Just write clean code and you will be fine.
 
-![Syntax Highlighting](./fileicons/limit.gif)
+![Syntax Highlighting](https://raw.githubusercontent.com/invitadoxr/template-strings-kit/master/fileicons/limit.gif)
 
 
 ### About Me
