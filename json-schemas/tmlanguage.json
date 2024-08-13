@@ -1,0 +1,1111 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://raw.githubusercontent.com/RedCMD/TmLanguage-Syntax-Highlighter/main/vscode.tmLanguage.schema.json",
+	"title": "VSCode TextMate JSON",
+	"markdownDescription": "[Documentation](https://github.com/RedCMD/TmLanguage-Syntax-Highlighter/blob/main/documentation/index.md) | [Schema](https://github.com/RedCMD/TmLanguage-Syntax-Highlighter/blob/main/vscode.tmLanguage.schema.json)",
+	"$comment": "https://opis.io/json-schema/2.x/",
+	"allowComments": false,
+	"allowTrailingCommas": false,
+	"$ref": "#/definitions/root",
+	"definitions": {
+		"root": {
+			"type": "object",
+			"required": [
+				"scopeName",
+				"patterns"
+			],
+			"properties": {
+				"version": {
+					"description": "A link to the current version of the file",
+					"type": "string",
+					"suggestSortText": "~version"
+				},
+				"$schema": {
+					"description": "The Schema used to validate this file",
+					"type": "string",
+					"default": "https://raw.githubusercontent.com/RedCMD/TmLanguage-Syntax-Highlighter/main/vscode.tmLanguage.schema.json"
+				},
+				"name": {
+					"description": "The name of your language",
+					"type": "string",
+					"suggestSortText": "@name"
+				},
+				"scopeName": {
+					"description": "The `scope-name` for your language\nIt is the same value as \"scopeName\" under \"grammars\" in your `package.json` file",
+					"type": "string",
+					"pattern": "^(source|text|markdown|html)(\\.[\\w-]+)*$",
+					"suggestSortText": "!!scopeName"
+				},
+				"comment": { "$ref": "#/definitions/comment" },
+				"//": { "$ref": "#/definitions/commentSlash" },
+				"patterns": {
+					"$ref": "#/definitions/patterns",
+					"suggestSortText": "!patterns"
+				},
+				"repository": {
+					"$ref": "#/definitions/repository",
+					"suggestSortText": "@repository"
+				},
+				"injections": {
+					"description": "A dictionary of injections. They do NOT work when the grammar is embedded into another language",
+					"type": "object",
+					"additionalProperties": {
+						"description": "An injection selector. https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#injection-grammars",
+						"type": "object",
+						"properties": {
+							"patterns": { "$ref": "#/definitions/patterns" },
+							"comment": { "$ref": "#/definitions/comment" },
+							"//": { "$ref": "#/definitions/commentSlash" }
+						},
+						"additionalProperties": { "description": "Unknown key" }
+					},
+					"default": { "L:source.scopeName -comment -string, R:source.scopeName.another": { } }
+				},
+				"injectionSelector": {
+					"description": "Controls which scope-names to inject into and with what priority. Default is 0, L: is -1 and R: is 1\nUsed in conjunction with \"injectTo\" under \"grammars\" in your `package.json` file\nhttps://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#injection-grammars",
+					"$ref": "#/definitions/injectionSelector"
+				},
+				"fileTypes": {
+					"description": "An array of file extensions your language supports\nNot currently supported by VSCode\nUse \"extensions\" under \"languages\" in your `package.json` file instead",
+					"type": "array",
+					"uniqueItems": true,
+					"items": {
+						"type": "string",
+						"pattern": "^[\\w.-]+$"
+					},
+					"suggestSortText": "~fileTypes"
+				},
+				"firstLineMatch": {
+					"description": "A regex to detect if an open file should get assigned to your language\nNot currently supported by VSCode\nUse \"extensions\" under \"languages\" in your `package.json` file instead",
+					"type": "string",
+					"format": "regex",
+					"suggestSortText": "~firstLineMatch"
+				},
+				"foldingStartMarker": {
+					"description": "A regex to define the start of a folding section\nNot currently supported by VSCode\nUse \"folding\" in your `language-configuration.json` file instead",
+					"type": "string",
+					"format": "regex",
+					"pattern": "\\^|\\$",
+					"suggestSortText": "~foldingStartMarker"
+				},
+				"foldingStopMarker": {
+					"description": "A regex to define the end of the folding section\nNot currently supported by VSCode\nUse \"folding\" in your `language-configuration.json` file instead",
+					"type": "string",
+					"format": "regex",
+					"pattern": "\\^|\\$",
+					"suggestSortText": "~foldingStopMarker"
+				},
+				"uuid": {
+					"$comment": "Technically this should be required in all json files",
+					"description": "A Universally Unique IDentifier for this json file",
+					"type": "string",
+					"format": "uuid",
+					"pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+					"suggestSortText": "~uuid"
+				}
+			},
+			"additionalProperties": { "description": "Unknown key" },
+			"dependencies": { "foldingStopMarker": { "required": [ "foldingStartMarker" ] } },
+			"defaultSnippets": [
+				{
+					"label": "New grammar",
+					"markdownDescription": "\t{\n\t\t\"scopeName\": \"source.languageId\",\n\t\t\"patterns\": [\n\t\t\t{ }\n\t\t],\n\t\t\"repository\": { }\n\t}",
+					"body": {
+						"$${_///}schema": "https://raw.githubusercontent.com/RedCMD/TmLanguage-Syntax-Highlighter/main/vscode.tmLanguage.schema.json",
+						"scopeName": "source.${1:languageId}",
+						"name": "${1:languageId}",
+						"patterns": [
+							"^{ \"include\": \"#$2\" }",
+							"^{ \"include\": \"#string\" }",
+							"^{ \"include\": \"#boolean\" }"
+						],
+						"repository": {
+							"${2:repo-item}": "^{\n\t\t\t$0\n\t\t}",
+							"boolean": {
+								"comment": "^\"`\\\\\\\\b` is a 0-width word boundary. `\\$1` references capture group 1\"",
+								"match": "\\\\b(true|false)\\\\b",
+								"name": "^\"constant.language.\\$1.${1:languageId}\""
+							},
+							"string": {
+								"comment": "\"begin\" & \"end\" can create a multi-line region",
+								"begin": "\"",
+								"end": "\"",
+								"name": "string.quoted.double.${1:languageId}",
+								"patterns": [
+									{
+										"comment": "Quad backslash required to match one literal backslash",
+										"match": "\\\\\\\\.",
+										"name": "constant.character.escape.${1:languageId}"
+									}
+								]
+							}
+						}
+					}
+				}
+			]
+		},
+		"repository": {
+			"description": "A dictionary of rules\nhttps://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#contributing-a-basic-grammar",
+			"type": "object",
+			"properties": {
+				"repo-item": {
+					"description": "A repository item. Reference using \"include\": \"#repo-item\"",
+					"$ref": "#/definitions/repo"
+				},
+				"$self": {
+					"description": "Internal VSCode TextMate node. Is overridden at parse time",
+					"$ref": "#/definitions/repo",
+					"doNotSuggest": true
+				},
+				"$base": {
+					"description": "Internal VSCode TextMate node. Is overridden at parse time",
+					"$ref": "#/definitions/repo",
+					"doNotSuggest": true
+				}
+			},
+			"additionalProperties": {
+				"description": "A repository item. Reference using \"include\": \"#...\"",
+				"$ref": "#/definitions/repo"
+			},
+			"defaultSnippets": [
+				{
+					"label": "Repo-item",
+					"markdownDescription": "\t\"repository\": {\n\t\t\"repo-item\": {\n\n\t\t}\n\t}",
+					"body": { "${1:repo-item}": { } }
+				}
+			]
+		},
+		"repo": {
+			"allOf": [
+				{
+					"dependencies": {
+						"repository": {
+							"anyOf": [
+								{
+									"required": [ "patterns" ],
+									"properties": {
+										"patterns": {
+											"$ref": "#/definitions/patterns",
+											"suggestSortText": "@patterns"
+										}
+									}
+								},
+								{
+									"required": [ "include" ],
+									"properties": {
+										"include": {
+											"$ref": "#/definitions/include",
+											"suggestSortText": "@include"
+										}
+									}
+								}
+							],
+							"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+							"oneOf": [
+								true,
+								{ "required": [ "match" ] },
+								{ "required": [ "begin" ] },
+								{ "required": [ "end" ] },
+								{ "required": [ "while" ] },
+								{ "required": [ "captures" ] },
+								{ "required": [ "beginCaptures" ] },
+								{ "required": [ "endCaptures" ] },
+								{ "required": [ "whileCaptures" ] },
+								{ "required": [ "applyEndPatternLast" ] },
+								{ "required": [ "name" ] },
+								{ "required": [ "contentName" ] }
+							]
+						},
+						"patterns": {
+							"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+							"oneOf": [
+								true,
+								{
+									"description": "Conflict: \"match\" has higher priority than \"patterns\"",
+									"required": [ "match" ]
+								},
+								{
+									"description": "Conflict: \"include\" has higher priority than \"patterns\"",
+									"required": [ "include" ]
+								}
+							],
+							"anyOf": [
+								{
+									"if": {
+										"oneOf": [
+											{ "required": [ "name" ] },
+											{ "required": [ "contentName" ] },
+											{ "required": [ "match" ] },
+											{ "required": [ "end" ] },
+											{ "required": [ "while" ] },
+											{ "required": [ "captures" ] },
+											{ "required": [ "beginCaptures" ] },
+											{ "required": [ "endCaptures" ] },
+											{ "required": [ "whileCaptures" ] },
+											{ "required": [ "applyEndPatternLast" ] }
+										]
+									},
+									"then": {
+										"$comment": "Only one rule paired with \"patterns\" was found, intention is unknown, show `multiple schemas` warning",
+										"oneOf": [
+											true,
+											true
+										]
+									}
+								},
+								{ "required": [ "begin" ] }
+							]
+						},
+						"include": {
+							"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+							"oneOf": [
+								true,
+								{ "required": [ "name" ] },
+								{ "required": [ "contentName" ] },
+								{
+									"description": "Conflict: \"match\" has higher priority than \"include\"",
+									"required": [ "match" ]
+								},
+								{
+									"description": "Conflict: \"begin\" has higher priority than \"include\"",
+									"required": [ "begin" ]
+								},
+								{ "required": [ "end" ] },
+								{ "required": [ "while" ] },
+								{ "required": [ "captures" ] },
+								{ "required": [ "beginCaptures" ] },
+								{ "required": [ "endCaptures" ] },
+								{ "required": [ "whileCaptures" ] },
+								{ "required": [ "applyEndPatternLast" ] }
+							]
+						},
+						"name": {
+							"if": { "required": [ "patterns" ] },
+							"then": {
+								"required": [ "begin" ],
+								"properties": {
+									"begin": {
+										"$ref": "#/definitions/begin",
+										"suggestSortText": "@begin"
+									}
+								}
+							},
+							"else": {
+								"anyOf": [
+									{
+										"required": [ "match" ],
+										"properties": {
+											"begin": {
+												"$ref": "#/definitions/match",
+												"suggestSortText": "@match"
+											}
+										}
+									},
+									{
+										"required": [ "begin" ],
+										"properties": {
+											"begin": {
+												"$ref": "#/definitions/begin",
+												"suggestSortText": "@begin"
+											}
+										}
+									}
+								]
+							}
+						},
+						"contentName": {
+							"required": [ "begin" ],
+							"properties": {
+								"begin": {
+									"$ref": "#/definitions/begin",
+									"suggestSortText": "@begin"
+								}
+							},
+							"oneOf": [
+								true,
+								{
+									"description": "Conflict: \"contentName\" does not work with \"match\"",
+									"required": [ "match" ]
+								}
+							]
+						}
+					}
+				},
+				{ "$ref": "#/definitions/pattern" }
+			],
+			"default": { }
+		},
+		"patterns": {
+			"description": "An array of pattern's to include",
+			"type": "array",
+			"items": {
+				"$comment": "many warnings :)",
+				"type": [ "object" ],
+				"not": {
+					"type": [
+						"string",
+						"boolean",
+						"integer",
+						"number",
+						"null"
+					]
+				},
+				"allOf": [
+					{
+						"dependencies": {
+							"repository": {
+								"required": [ "patterns" ],
+								"properties": {
+									"patterns": {
+										"$ref": "#/definitions/patterns",
+										"suggestSortText": "@patterns"
+									}
+								},
+								"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+								"oneOf": [
+									true,
+									{ "required": [ "include" ] },
+									{ "required": [ "match" ] },
+									{ "required": [ "begin" ] },
+									{ "required": [ "end" ] },
+									{ "required": [ "while" ] },
+									{ "required": [ "captures" ] },
+									{ "required": [ "beginCaptures" ] },
+									{ "required": [ "endCaptures" ] },
+									{ "required": [ "whileCaptures" ] },
+									{ "required": [ "applyEndPatternLast" ] },
+									{ "required": [ "name" ] },
+									{ "required": [ "contentName" ] }
+								]
+							},
+							"patterns": {
+								"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+								"oneOf": [
+									true,
+									{
+										"description": "Conflict: \"match\" has higher priority than \"patterns\"",
+										"required": [ "match" ]
+									}
+								],
+								"anyOf": [
+									{
+										"if": {
+											"oneOf": [
+												{ "required": [ "name" ] },
+												{ "required": [ "contentName" ] },
+												{ "required": [ "match" ] },
+												{ "required": [ "end" ] },
+												{ "required": [ "while" ] },
+												{ "required": [ "captures" ] },
+												{ "required": [ "beginCaptures" ] },
+												{ "required": [ "endCaptures" ] },
+												{ "required": [ "whileCaptures" ] },
+												{ "required": [ "applyEndPatternLast" ] }
+											]
+										},
+										"then": {
+											"$comment": "Only one rule paired with \"patterns\" was found, intention is unknown, show `multiple schemas` warning",
+											"oneOf": [
+												true,
+												true
+											]
+										}
+									},
+									{ "required": [ "begin" ] }
+								]
+							},
+							"include": {
+								"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+								"oneOf": [
+									true,
+									{
+										"description": "Conflict: \"name\" does not work with \"include\"",
+										"required": [ "name" ]
+									},
+									{
+										"description": "Conflict: \"contentName\" does not work with \"include\"",
+										"required": [ "contentName" ]
+									},
+									{
+										"description": "Conflict: \"match\" has higher priority than \"include\"",
+										"required": [ "match" ]
+									},
+									{
+										"description": "Conflict: \"begin\" has higher priority than \"include\"",
+										"required": [ "begin" ]
+									},
+									{
+										"description": "Conflict: \"end\" does not work with \"include\"",
+										"required": [ "end" ]
+									},
+									{
+										"description": "Conflict: \"while\" does not work with \"include\"",
+										"required": [ "while" ]
+									},
+									{
+										"description": "Conflict: \"captures\" does not work with \"include\"",
+										"required": [ "captures" ]
+									},
+									{
+										"description": "Conflict: \"beginCaptures\" does not work with \"include\"",
+										"required": [ "beginCaptures" ]
+									},
+									{
+										"description": "Conflict: \"endCaptures\" does not work with \"include\"",
+										"required": [ "endCaptures" ]
+									},
+									{
+										"description": "Conflict: \"whileCaptures\" does not work with \"include\"",
+										"required": [ "whileCaptures" ]
+									},
+									{
+										"description": "Conflict: \"applyEndPatternLast\" does not work with \"include\"",
+										"required": [ "applyEndPatternLast" ]
+									},
+									{
+										"description": "Conflict: \"patterns\" has higher priority than \"include\"",
+										"required": [ "patterns" ]
+									}
+								]
+							},
+							"name": {
+								"if": { "required": [ "patterns" ] },
+								"then": {
+									"properties": {
+										"begin": {
+											"$ref": "#/definitions/begin",
+											"suggestSortText": "@begin"
+										}
+									},
+									"anyOf": [
+										{ "required": [ "begin" ] },
+										{ "required": [ "end" ] },
+										{ "required": [ "while" ] },
+										{ "required": [ "beginCaptures" ] },
+										{ "required": [ "endCaptures" ] },
+										{ "required": [ "whileCaptures" ] }
+									]
+								},
+								"else": {
+									"anyOf": [
+										{
+											"required": [ "match" ],
+											"properties": {
+												"match": {
+													"$ref": "#/definitions/match",
+													"suggestSortText": "@match"
+												}
+											}
+										},
+										{ "required": [ "begin" ] },
+										{ "required": [ "end" ] },
+										{ "required": [ "while" ] },
+										{ "required": [ "beginCaptures" ] },
+										{ "required": [ "endCaptures" ] },
+										{ "required": [ "whileCaptures" ] },
+										{ "required": [ "contentName" ] }
+									]
+								}
+							},
+							"contentName": {
+								"required": [ "begin" ],
+								"properties": {
+									"begin": {
+										"$ref": "#/definitions/begin",
+										"suggestSortText": "@begin"
+									}
+								},
+								"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+								"oneOf": [
+									true,
+									{
+										"required": [ "match" ],
+										"description": "Conflict: \"contentName\" cant target \"match\""
+									}
+								]
+							}
+						}
+					},
+					{ "$ref": "#/definitions/pattern" }
+				]
+			}
+		},
+		"pattern": {
+			"type": "object",
+			"properties": {
+				"match": { "$ref": "#/definitions/match" },
+				"begin": { "$ref": "#/definitions/begin" },
+				"end": { "$ref": "#/definitions/end" },
+				"while": { "$ref": "#/definitions/while" },
+				"captures": { "$ref": "#/definitions/captures" },
+				"beginCaptures": { "$ref": "#/definitions/beginCaptures" },
+				"endCaptures": { "$ref": "#/definitions/endCaptures" },
+				"whileCaptures": { "$ref": "#/definitions/whileCaptures" },
+				"applyEndPatternLast": { "$ref": "#/definitions/applyEndPatternLast" },
+				"name": { "$ref": "#/definitions/name" },
+				"contentName": { "$ref": "#/definitions/contentName" },
+				"include": { "$ref": "#/definitions/include" },
+				"patterns": { "$ref": "#/definitions/patterns" },
+				"repository": { "$ref": "#/definitions/repository" },
+				"disabled": { "$ref": "#/definitions/disabled" },
+				"id": { "$ref": "#/definitions/id" },
+				"comment": { "$ref": "#/definitions/comment" },
+				"//": { "$ref": "#/definitions/commentSlash" }
+			},
+			"additionalProperties": { "description": "Unknown key" },
+			"dependencies": {
+				"match": {
+					"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+					"oneOf": [
+						true,
+						{
+							"description": "Conflict: \"match\" has higher priority than \"begin\"",
+							"required": [ "begin" ]
+						},
+						{ "required": [ "end" ] },
+						{ "required": [ "while" ] },
+						{ "required": [ "beginCaptures" ] },
+						{ "required": [ "endCaptures" ] },
+						{ "required": [ "whileCaptures" ] },
+						{ "required": [ "applyEndPatternLast" ] }
+					]
+				},
+				"begin": {
+					"oneOf": [
+						true,
+						{
+							"required": [
+								"end",
+								"while"
+							],
+							"description": "Conflict: \"while\" has higher priority than \"end\""
+						}
+					]
+				},
+				"end": {
+					"required": [ "begin" ],
+					"properties": {
+						"begin": {
+							"suggestSortText": "@begin",
+							"$ref": "#/definitions/begin"
+						}
+					}
+				},
+				"while": {
+					"required": [ "begin" ],
+					"properties": { "begin": { "suggestSortText": "@begin" } }
+				},
+				"captures": {
+					"if": { "required": [ "patterns" ] },
+					"then": {
+						"properties": { "begin": { "suggestSortText": "@begin" } },
+						"anyOf": [
+							{ "required": [ "begin" ] },
+							{ "required": [ "end" ] },
+							{ "required": [ "while" ] }
+						]
+					},
+					"else": {
+						"anyOf": [
+							{
+								"required": [ "match" ],
+								"properties": { "match": { "suggestSortText": "@match" } }
+							},
+							{ "required": [ "begin" ] },
+							{ "required": [ "end" ] },
+							{ "required": [ "while" ] },
+							{ "required": [ "beginCaptures" ] },
+							{ "required": [ "endCaptures" ] },
+							{ "required": [ "whileCaptures" ] },
+							{ "required": [ "contentName" ] }
+						]
+					},
+					"oneOf": [
+						true,
+						{
+							"description": "Conflict: \"beginCaptures\"/\"endCaptures\"/\"whileCaptures\" has higher priority than \"captures\"",
+							"allOf": [
+								{ "required": [ "beginCaptures" ] },
+								{
+									"anyOf": [
+										{ "required": [ "endCaptures" ] },
+										{ "required": [ "whileCaptures" ] }
+									]
+								}
+							]
+						}
+					]
+				},
+				"beginCaptures": {
+					"required": [ "begin" ],
+					"properties": { "begin": { "suggestSortText": "@begin" } }
+				},
+				"endCaptures": {
+					"required": [
+						"end",
+						"begin"
+					],
+					"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+					"oneOf": [
+						true,
+						{ "required": [ "match" ] },
+						{ "required": [ "while" ] },
+						{ "required": [ "whileCaptures" ] }
+					],
+					"properties": {
+						"begin": { "suggestSortText": "@begin" },
+						"end": { "suggestSortText": "@end" }
+					}
+				},
+				"whileCaptures": {
+					"required": [
+						"while",
+						"begin"
+					],
+					"oneOf": [
+						true,
+						{ "required": [ "end" ] },
+						{ "required": [ "endCaptures" ] }
+					],
+					"properties": {
+						"begin": { "suggestSortText": "@begin" },
+						"while": { "suggestSortText": "@while" }
+					}
+				},
+				"applyEndPatternLast": {
+					"required": [
+						"begin",
+						"end"
+					],
+					"properties": {
+						"begin": {
+							"$ref": "#/definitions/begin",
+							"suggestSortText": "@begin"
+						},
+						"end": {
+							"$ref": "#/definitions/end",
+							"suggestSortText": "@end"
+						}
+					},
+					"$comment": "Using \"not\" creates an ugly warning range in VSCode",
+					"oneOf": [
+						true,
+						{ "required": [ "while" ] },
+						{ "required": [ "whileCaptures" ] }
+					]
+				}
+			}
+		},
+		"match": {
+			"$comment": "No description; because having hovers is annoying",
+			"description": "match",
+			"type": "string",
+			"defaultSnippets": [
+				{
+					"label": "~Regular expression",
+					"markdownDescription": "\t\"match\": \"\\\\b(true|false)\\\\b\"",
+					"body": "${1:\\\\b(true|false)\\\\b}"
+				}
+			]
+		},
+		"begin": {
+			"$comment": "TODO: ",
+			"description": "begin",
+			"type": "string",
+			"defaultSnippets": [
+				{
+					"label": "Regular expression",
+					"markdownDescription": "\t\"begin\": \"\\\"\"",
+					"body": "${1:\"}"
+				}
+			]
+		},
+		"end": {
+			"$comment": "TODO: ",
+			"description": "end",
+			"type": "string",
+			"defaultSnippets": [
+				{
+					"label": "Regular expression",
+					"markdownDescription": "\t\"end\": \"\\\"\"",
+					"body": "${1:\"}"
+				}
+			]
+		},
+		"while": {
+			"$comment": "TODO: ",
+			"description": "while",
+			"type": "string",
+			"defaultSnippets": [
+				{
+					"label": "Regular expression",
+					"markdownDescription": "\t\"while\": \"^\\\\s*\"",
+					"body": "${1:^\\\\s*}"
+				}
+			]
+		},
+		"captures": {
+			"$comment": "TODO: description",
+			"description": "captures",
+			"type": "object",
+			"patternProperties": { "^\\d+": { "$ref": "#/definitions/capture" } },
+			"properties": {
+				"comment": { "$ref": "#/definitions/comment" },
+				"//": { "$ref": "#/definitions/commentSlash" },
+				"0": { "$ref": "#/definitions/capture" }
+			},
+			"additionalProperties": {
+				"description": "Unknown key. Use the format \"0\": { }",
+				"markdownDescriptions": "Unknown key. Use the following format:\n\n\t\"0\": { }",
+				"default": { }
+			},
+			"defaultSnippets": [
+				{
+					"label": "Capture 0",
+					"markdownDescription": "\t\"0\": {\n\t\t\"name\": \"\"\n\t}",
+					"body": { "${1:0}": { "name": "$2" } }
+				}
+			]
+		},
+		"capture": {
+			"$comment": "Who knew all this could go inside a `capture`?",
+			"description": "Target specific capture group",
+			"type": "object",
+			"properties": {
+				"match": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/match"
+				},
+				"begin": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/begin"
+				},
+				"end": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/end"
+				},
+				"while": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/while"
+				},
+				"captures": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/captures"
+				},
+				"beginCaptures": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/beginCaptures"
+				},
+				"endCaptures": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/endCaptures"
+				},
+				"whileCaptures": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/whileCaptures"
+				},
+				"applyEndPatternLast": {
+					"deprecationMessage": "Buggy. Nest inside \"patterns\" instead",
+					"$ref": "#/definitions/applyEndPatternLast"
+				},
+				"name": {
+					"$ref": "#/definitions/name",
+					"suggestSortText": "@name"
+				},
+				"contentName": {
+					"deprecationMessage": "Buggy. Use \"name\" instead",
+					"$ref": "#/definitions/contentName"
+				},
+				"include": {
+					"deprecationMessage": "\"patterns\" is required to be present here for \"include\" to work. But...\nConflict: \"patterns\" has higher priority than \"include\"",
+					"default": "",
+					"suggestSortText": "~include",
+					"doNotSuggest": true
+				},
+				"patterns": {
+					"$comment": "Change `false` to `true` to show a warning on \"patterns\" inside a (capture)",
+					"if": false,
+					"then": { "deprecationMessage": "A \"patterns\" array inside a (capture) causes a performance hit" },
+					"$ref": "#/definitions/patterns",
+					"suggestSortText": "@patterns"
+				},
+				"repository": {
+					"$ref": "#/definitions/repository",
+					"suggestSortText": "@repository"
+				},
+				"disabled": {
+					"$ref": "#/definitions/disabled",
+					"doNotSuggest": true
+				},
+				"id": { "$ref": "#/definitions/id" },
+				"comment": {
+					"$ref": "#/definitions/comment",
+					"suggestSortText": "_comment"
+				},
+				"//": { "$ref": "#/definitions/commentSlash" }
+			},
+			"dependencies": {
+				"contentName": { "required": [ "patterns" ] },
+				"match": { "required": [ "patterns" ] },
+				"begin": { "required": [ "patterns" ] },
+				"end": { "required": [ "patterns", "begin" ] },
+				"while": { "required": [ "patterns", "begin" ] },
+				"applyEndPatternLast": { "required": [ "patterns", "begin", "end" ] },
+				"captures": { "required": [ "patterns" ] },
+				"beginCaptures": { "required": [ "patterns", "begin" ] },
+				"endCaptures": { "required": [ "patterns", "begin", "end" ] },
+				"whileCaptures": { "required": [ "patterns", "begin", "while" ] },
+				"repository": {
+					"required": [ "patterns" ],
+					"oneOf": [
+						true,
+						{
+							"description": "Conflict: \"match\" effectively disables \"repository\"",
+							"required": [ "match" ]
+						},
+						{
+							"description": "Conflict: \"begin\" effectively disables \"repository\"",
+							"required": [ "begin" ]
+						}
+					]
+				}
+			}
+		},
+		"beginCaptures": {
+			"$comment": "TODO: ",
+			"description": "beginCaptures",
+			"$ref": "#/definitions/captures"
+		},
+		"endCaptures": {
+			"$comment": "TODO: ",
+			"description": "endCaptures",
+			"$ref": "#/definitions/captures"
+		},
+		"whileCaptures": {
+			"$comment": "TODO: ",
+			"description": "whileCaptures",
+			"$ref": "#/definitions/captures"
+		},
+		"applyEndPatternLast": {
+			"description": "Controls if the \"end\" pattern should attempt to match before or after the \"patterns\" array\n`0`, `false` and `null` will disable it. `true` and numbers != `0` will enable it",
+			"type": [
+				"boolean",
+				"integer",
+				"null"
+			],
+			"default": true
+		},
+		"include": {
+			"description": "Reference an item in a repository",
+			"type": "string",
+			"pattern": "^[\\w\\-.$]*#?[\\w\\-#. $]*$",
+			"defaultSnippets": [
+				{
+					"label": "#repo-item",
+					"markdownDescription": "\t\"include\": \"#repo-item\"",
+					"body": "#${1:repo-item}"
+				}
+			]
+		},
+		"name": {
+			"$comment": "Should `TextMate` or `VSCode Dark++` be first?",
+			"description": "A list of space-separated scope-names to be assigned to the provided token. VSCode will then colour that token using the current theme\n`comment`, `string` and `regex` disables bracket matching while `meta.embedded` reenables it\nhttps://macromates.com/manual/en/language_grammars#naming_conventions",
+			"$ref": "#/definitions/name-content"
+		},
+		"contentName": {
+			"description": "Same as \"name\", but only applies to inside a \"begin\"/\"end\" region",
+			"$ref": "#/definitions/name-content"
+		},
+		"name-content": {
+			"type": "string",
+			"anyOf": [
+				{ "pattern": "^([\\w\\-. ]|\\$0*\\d{1,3}(?!\\d)|\\${0*\\d{1,3}:/(upcase|downcase)})*$" },
+				{
+					"$comment": "https://macromates.com/manual/en/language_grammars#naming_conventions",
+					"enum": [
+						"comment",
+						"comment.line",
+						"comment.line.double-slash",
+						"comment.line.double-dash",
+						"comment.line.number-sign",
+						"comment.line.percentage",
+						"comment.line.character",
+						"comment.block",
+						"comment.block.documentation",
+						"constant",
+						"constant.numeric",
+						"constant.character",
+						"constant.character.escape",
+						"constant.language",
+						"constant.other",
+						"entity",
+						"entity.name",
+						"entity.name.function",
+						"entity.name.type",
+						"entity.name.tag",
+						"entity.name.section",
+						"entity.other",
+						"entity.other.inherited-class",
+						"entity.other.attribute-name",
+						"invalid",
+						"invalid.illegal",
+						"invalid.deprecated",
+						"keyword",
+						"keyword.control",
+						"keyword.operator",
+						"keyword.other",
+						"markup",
+						"markup.underline",
+						"markup.underline.link",
+						"markup.bold",
+						"markup.heading",
+						"markup.italic",
+						"markup.list",
+						"markup.list.numbered",
+						"markup.list.unnumbered",
+						"markup.quote",
+						"markup.raw",
+						"markup.other",
+						"meta",
+						"storage",
+						"storage.type",
+						"storage.modifier",
+						"string",
+						"string.quoted",
+						"string.quoted.single",
+						"string.quoted.double",
+						"string.quoted.triple",
+						"string.quoted.other",
+						"string.unquoted",
+						"string.interpolated",
+						"string.regexp",
+						"string.other",
+						"support",
+						"support.function",
+						"support.class",
+						"support.type",
+						"support.constant",
+						"support.variable",
+						"support.other",
+						"variable",
+						"variable.parameter",
+						"variable.language",
+						"variable.other"
+					],
+					"enumDescriptions": [
+						"For comments",
+						"Line comments, we specialize further so that the type of comment start character(s) can be extracted from the scope",
+						"// comment",
+						"-- comment",
+						"# comment",
+						"% comment",
+						"Other types of line comments",
+						"Multi-line comments like /* … */ and <!-- … -->",
+						"Embedded documentation",
+						"Various forms of constants",
+						"Those which represent numbers, e.g. 42, 1.3f, 0x4AB1U",
+						"Those which represent characters, e.g. &lt;, \\e, \\031",
+						"Escape sequences like \\e would be constant.character.escape",
+						"Constants (generally) provided by the language which are “special” like true, false, nil, YES, NO, etc",
+						"Other constants, e.g. colors in CSS",
+						"An entity refers to a larger part of the document, for example a chapter, class, function, or tag. We do not scope the entire entity as entity.* (we use meta.* for that). But we do use entity.* for the “placeholders” in the larger entity, e.g. if the entity is a chapter, we would use entity.name.section for the chapter title",
+						"We are naming the larger entity",
+						"The name of a function",
+						"The name of a type declaration or class",
+						"A tag name",
+						"The name is the name of a section/heading",
+						"Other entities",
+						"The superclass/baseclass name",
+						"The name of an attribute (mainly in tags)",
+						"Stuff which is “invalid”",
+						"Illegal, e.g. an ampersand or lower-than character in HTML (which is not part of an entity/tag)",
+						"For deprecated stuff e.g. using an API function which is deprecated or using styling with strict HTML",
+						"Keywords (when these do not fall into the other groups)",
+						"Mainly related to flow control like continue, while, return, etc",
+						"Operators can either be textual (e.g. or) or be characters",
+						"Other keywords",
+						"This is for markup languages and generally applies to larger subsets of the text",
+						"Underlined text",
+						"This is for links, as a convenience this is derived from markup.underline so that if there is no theme rule which specifically targets markup.underline.link then it will inherit the underline style",
+						"Bold text (text which is strong and similar should preferably be derived from this name)",
+						"A section header. Optionally provide the heading level as the next element, for example markup.heading.2.html for <h2>…</h2> in HTML",
+						"Italic text (text which is emphasized and similar should preferably be derived from this name)",
+						"List items",
+						"Numbered list items",
+						"Unnumbered list items",
+						"Quoted (sometimes block quoted) text",
+						"Text which is verbatim, e.g. code listings. Normally spell checking is disabled for markup.raw",
+						"Other markup constructs",
+						"The meta scope is generally used to markup larger parts of the document. For example the entire line which declares a function would be meta.function and the subsets would be storage.type, entity.name.function, variable.parameter etc. and only the latter would be styled. Sometimes the meta part of the scope will be used only to limit the more general element that is styled, most of the time meta scopes are however used in scope selectors for activation of bundle items. For example in Objective-C there is a meta scope for the interface declaration of a class and the implementation, allowing the same tab-triggers to expand differently, depending on context",
+						"Things relating to “storage”",
+						"The type of something, class, function, int, var, etc",
+						"A storage modifier like static, final, abstract, etc",
+						"Strings",
+						"Quoted strings",
+						"Single quoted strings: 'foo'",
+						"Double quoted strings: \"foo\"",
+						"Triple quoted strings: \"\"\"Python\"\"\"",
+						"Other types of quoting: $'shell', %s{...}",
+						"For things like here-docs and here-strings",
+						"Strings which are “evaluated”: `date`, $(pwd)",
+						"Regular expressions: /(\\w+)/",
+						"Other types of strings (should rarely be used)",
+						"Things provided by a framework or library should be below support",
+						"Functions provided by the framework/library. For example NSLog in Objective-C is support.function",
+						"When the framework/library provides classes",
+						"Types provided by the framework/library, this is probably only used for languages derived from C, which has typedef (and struct). Most other languages would introduce new types as classes",
+						"Constants (magic values) provided by the framework/library",
+						"Variables provided by the framework/library. For example NSApp in AppKit",
+						"The above should be exhaustive, but for everything else use support.other",
+						"Variables. Not all languages allow easy identification (and thus markup) of these",
+						"When the variable is declared as the parameter",
+						"Reserved language variables like this, super, self, etc",
+						"Other variables, like $some_variables"
+					]
+				}
+			]
+		},
+		"injectionSelector": {
+			"type": [
+				"string",
+				"array"
+			],
+			"items": {
+				"description": "An array of \"injectionSelector\" is not offically supported by VSCode TextMate\nBut still happens to work because JavaScript",
+				"$ref": "#/definitions/injectionSelector"
+			},
+			"default": "L:source.js -string -comment"
+		},
+		"disabled": {
+			"description": "Disables the current rule for easy testing\nNot currently supported by VSCode",
+			"type": [
+				"integer",
+				"boolean"
+			],
+			"suggestSortText": "~disabled"
+		},
+		"id": {
+			"deprecationMessage": "Used internally by VSCode-TextMate. Do Not Use",
+			"doNotSuggest": true
+		},
+		"comment": {
+			"$comment": "No description; because having hovers is annoying",
+			"type": "string",
+			"default": ""
+		},
+		"commentSlash": {
+			"description": "Alternative comment; because VSCode ignores duplicate `//` keys. Supports all json types",
+			"type": [
+				"string",
+				"object",
+				"array",
+				"integer",
+				"number",
+				"boolean",
+				"null"
+			],
+			"suggestSortText": "~//",
+			"default": ""
+		}
+	}
+}

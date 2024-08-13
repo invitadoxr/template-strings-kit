@@ -1,0 +1,44 @@
+{
+  "fileTypes": [ "js" ],
+  "injectionSelector": "L:source.js -comment -string",
+  "injections": {
+    "L:source": {
+      "patterns": [
+        {
+          "match": "<",
+          "name": "invalid.illegal.bad-angle-bracket.jsx"
+        }
+      ]
+    }
+  },
+  "patterns": [
+    {
+      "begin": "(?i)(\\/\\*\\s*(jsx)\\s*\\*\\/\\s*`)",
+      "beginCaptures": { "1": { "name": "constant.character.escape" } },
+      "end": "(`)",
+      "patterns": [ { "include": "source.js.jsx" } ],
+      "name": "meta.embedded.jsx"
+    },
+    {
+      "begin": "(\\$\\(`)",
+      "end": "(`\\))",
+      "beginCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "endCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "patterns": [ { "include": "source.js" } ],
+      "name": "meta.embedded.jsx"
+    },
+    {
+      "begin": "(\\${)",
+      "end": "(})",
+      "beginCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "endCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "patterns": [ { "include": "source.js" } ],
+      "name": "meta.embedded.js"
+    },
+    {
+      "match": "<[^>]*$/m",
+      "name": "invalid.illegal.unclosed-tag.jsx"
+    }
+  ],
+  "scopeName": "source.jsx.str.intel"
+}

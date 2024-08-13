@@ -1,0 +1,44 @@
+{
+  "fileTypes": [ "js" ],
+  "injectionSelector": "L:source.js -comment -string",
+  "injections": {
+    "L:source": {
+      "patterns": [
+        {
+          "match": "{",
+          "name": "invalid.illegal.unclosebrace.css"
+        }
+      ]
+    }
+  },
+  "patterns": [
+    {
+      "begin": "(?i)(\\/\\*\\s*(css)\\s*\\*\\/\\s*`)",
+      "beginCaptures": { "1": { "name": "constant.character.escape" } },
+      "end": "(`)",
+      "patterns": [ { "include": "source.css" } ],
+      "name": "meta.embedded.css"
+    },
+    {
+      "begin": "(\\$\\(`)",
+      "end": "(`\\))",
+      "beginCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "endCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "patterns": [ { "include": "source.js" } ],
+      "name": "meta.embedded.js"
+    },
+    {
+      "begin": "(\\${)",
+      "end": "(})",
+      "beginCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "endCaptures": { "1": { "name": "entity.name.tag.js" } },
+      "patterns": [ { "include": "source.js" } ],
+      "name": "meta.embedded.js"
+    },
+    {
+      "match": "{[^}]*$/m",
+      "name": "invalid.illegal.unclosed-tag.html"
+    }
+  ],
+  "scopeName": "source.css.str.intel"
+}

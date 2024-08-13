@@ -1,0 +1,73 @@
+{
+    "name": "template-strings-kit",
+    "displayName": "Template Strings Kit - HTML CCS JSX Intellisense in template strings",
+    "description": "Intellisense in template strings with prefix html, css or jsx",
+    "version": "0.0.1",
+    "publisher": "sv",
+    "engines": {
+        "vscode": "^1.92.0"
+    },
+    "categories": [
+        "Formatters",
+        "Programming Languages",
+        "Linters",
+        "Language Packs",
+        "Other",
+        "Themes"
+    ],
+    "activationEvents": [
+        "onLanguage:javascript",
+        "onLanguage:typescript"
+    ],
+    "main": "./dist/min.js",
+    "contributes": {
+        "grammars": [
+            {
+                "scopeName": "source.html.str.intel",
+                "path": "./syntaxes/v3_source.html.str.intel.tmlanguage.json",
+                "injectTo": [
+                    "source.js"
+                ]
+            },
+            {
+                "scopeName": "source.css.str.intel",
+                "path": "./syntaxes/v3_source.css.str.intel.tmlanguage.json",
+                "injectTo": [
+                    "source.js"
+                ]
+            },
+            {
+                "scopeName": "source.jsx.str.intel",
+                "path": "./syntaxes/v3_source.jsx.str.intel.tmlanguage.json",
+                "injectTo": [
+                    "source.js"
+                ]
+            }
+        ],
+        "languages": [
+            {
+                "id": "javascript",
+                "extensions": [
+                    ".js"
+                ]
+            },
+            {
+                "id": "typescript",
+                "extensions": [
+                    ".ts"
+                ]
+            }
+        ]
+    },
+    "devDependencies": {
+        "@swc/cli": "^0.4.0",
+        "@types/vscode": "^1.92.0",
+        "@vscode/test-electron": "^2.4.1",
+        "@vscode/vsce": "^2.31.1",
+        "esbuild": "^0.23.0"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@swc/core": "^1.7.10"
+    }
+}
